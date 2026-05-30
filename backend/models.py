@@ -310,7 +310,7 @@ class GenerationSettingsUpdate(BaseModel):
 class DownloadSettingsResponse(BaseModel):
     """Server-persisted download source preferences."""
 
-    model_source: Literal["huggingface", "modelscope"] = "huggingface"
+    model_source: Literal["huggingface", "modelscope"] = "modelscope"
     github_mirror_enabled: bool = False
 
     class Config:

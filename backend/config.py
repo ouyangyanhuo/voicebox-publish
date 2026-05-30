@@ -53,7 +53,7 @@ def configure_cache_environment() -> None:
 
     _set_env_path("HF_HOME", _cache_dir / "huggingface")
     _set_env_path("HF_HUB_CACHE", _models_dir / "huggingface")
-    _set_env_path("TRANSFORMERS_CACHE", _models_dir / "huggingface")
+    os.environ.pop("TRANSFORMERS_CACHE", None)
     _set_env_path("HF_DATASETS_CACHE", _cache_dir / "huggingface" / "datasets")
 
     _set_env_path("MODELSCOPE_CACHE", _models_dir / "modelscope")

@@ -785,6 +785,18 @@
         "enabled": "Network access enabled. Restart the app to apply.",
         "disabled": "Network access disabled. Restart the app to apply."
       },
+      "downloads": {
+        "title": "Downloads",
+        "description": "Choose install-local download sources for models and backend packages.",
+        "modelSource": {
+          "title": "Model download source",
+          "description": "Model files are stored under the install directory model folder."
+        },
+        "githubMirror": {
+          "title": "GitHub mirror proxy",
+          "description": "Use the built-in mainland China mirror for backend downloads from GitHub Releases."
+        }
+      },
       "connection": {
         "connecting": "Connecting",
         "offline": "Offline",

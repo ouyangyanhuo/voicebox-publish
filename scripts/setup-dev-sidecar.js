@@ -23,6 +23,30 @@ const BINARIES_DIR = join(__dirname, '..', 'tauri', 'src-tauri', 'binaries');
 // Minimum size to consider a binary "real" (placeholder is ~256 bytes, real is MBs)
 const MIN_REAL_BINARY_SIZE = 10000;
 
+function commandExists(command) {
+  try {
+    execSync(`${command} --version`, { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function ensureTauriPrerequisites() {
+  if (commandExists('cargo')) {
+    return;
+  }
+
+  console.error(
+    [
+      'Rust Cargo is required for `bun run dev` / `tauri dev`, but `cargo` was not found in PATH.',
+      'Install Rust from https://www.rust-lang.org/tools/install, then restart this terminal.',
+      'You can still run the backend only with `bun run dev:server`.',
+    ].join('\n'),
+  );
+  process.exit(1);
+}
+
 // Get the current platform's target triple
 function getTargetTriple() {
   try {
@@ -372,6 +396,8 @@ exit 1
 const SIDECAR_BASE_NAMES = ['voicebox-server', 'voicebox-mcp'];
 
 function main() {
+  ensureTauriPrerequisites();
+
   const targetTriple = getTargetTriple();
   for (const baseName of SIDECAR_BASE_NAMES) {
     createPlaceholderBinary(targetTriple, baseName);

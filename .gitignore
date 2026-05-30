@@ -10,6 +10,8 @@ venv/
 env/
 ENV/
 *.prompt
+model/
+data/
 # Build outputs
 dist/
 build/
@@ -68,3 +70,4 @@ temp/
 backend/tests/results/
 backend/tests/fixtures/reference_voice.wav
 backend/tests/fixtures/reference_voice.txt
+CLAUDE.md

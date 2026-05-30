@@ -240,7 +240,7 @@ class DownloadSettings(Base):
     __tablename__ = "download_settings"
 
     id = Column(Integer, primary_key=True, default=1)
-    model_source = Column(String, nullable=False, default="huggingface")
+    model_source = Column(String, nullable=False, default="modelscope")
     github_mirror_enabled = Column(Boolean, nullable=False, default=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

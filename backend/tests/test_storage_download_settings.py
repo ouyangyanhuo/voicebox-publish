@@ -22,8 +22,8 @@ def test_install_roots_and_cache_env_are_install_local(tmp_path):
         assert config.get_huggingface_models_dir() == tmp_path / "model" / "huggingface"
         assert config.get_modelscope_models_dir() == tmp_path / "model" / "modelscope"
 
+        assert Path(os.environ["HF_HOME"]) == tmp_path / "cache" / "huggingface"
         assert Path(os.environ["HF_HUB_CACHE"]) == tmp_path / "model" / "huggingface"
-        assert Path(os.environ["TRANSFORMERS_CACHE"]) == tmp_path / "model" / "huggingface"
         assert Path(os.environ["MODELSCOPE_CACHE"]) == tmp_path / "model" / "modelscope"
         assert Path(os.environ["TORCH_HOME"]) == tmp_path / "cache" / "torch"
     finally:
@@ -37,7 +37,7 @@ def test_download_settings_defaults_and_updates():
     db = session_local()
     try:
         row = settings_service.get_download_settings(db)
-        assert row.model_source == "huggingface"
+        assert row.model_source == "modelscope"
         assert row.github_mirror_enabled is False
 
         updated = settings_service.update_download_settings(

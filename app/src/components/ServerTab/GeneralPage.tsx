@@ -217,29 +217,15 @@ export function GeneralPage() {
       </SettingSection>
 
       <SettingSection
-        title={t('settings.general.downloads.title', { defaultValue: 'Downloads' })}
-        description={t(
-          'settings.general.downloads.description',
-          {
-            defaultValue:
-              'Choose install-local download sources for models and backend packages.',
-          },
-        )}
+        title={t('settings.general.downloads.title')}
+        description={t('settings.general.downloads.description')}
       >
         <SettingRow
-          title={t('settings.general.downloads.modelSource.title', {
-            defaultValue: 'Model download source',
-          })}
-          description={t(
-            'settings.general.downloads.modelSource.description',
-            {
-              defaultValue:
-                'Model files are stored under the install directory model folder.',
-            },
-          )}
+          title={t('settings.general.downloads.modelSource.title')}
+          description={t('settings.general.downloads.modelSource.description')}
           action={
             <Select
-              value={downloadSettings?.model_source ?? 'huggingface'}
+              value={downloadSettings?.model_source ?? 'modelscope'}
               onValueChange={(value) => {
                 updateDownloadSettings({ model_source: value as 'huggingface' | 'modelscope' });
               }}
@@ -256,16 +242,8 @@ export function GeneralPage() {
         />
 
         <SettingRow
-          title={t('settings.general.downloads.githubMirror.title', {
-            defaultValue: 'GitHub mirror proxy',
-          })}
-          description={t(
-            'settings.general.downloads.githubMirror.description',
-            {
-              defaultValue:
-                'Use the built-in mainland China mirror for backend downloads from GitHub Releases.',
-            },
-          )}
+          title={t('settings.general.downloads.githubMirror.title')}
+          description={t('settings.general.downloads.githubMirror.description')}
           htmlFor="githubMirror"
           action={
             <Toggle

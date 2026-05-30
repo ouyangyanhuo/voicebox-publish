@@ -785,6 +785,18 @@
         "enabled": "已啟用網路存取。重新啟動應用程式以套用。",
         "disabled": "已停用網路存取。重新啟動應用程式以套用。"
       },
+      "downloads": {
+        "title": "下載",
+        "description": "選擇模型和後端套件的安裝目錄內下載來源。",
+        "modelSource": {
+          "title": "模型下載來源",
+          "description": "模型檔案會儲存在安裝目錄下的 model 資料夾中。"
+        },
+        "githubMirror": {
+          "title": "GitHub 下載鏡像代理",
+          "description": "後端從 GitHub Releases 下載內容時使用內建的中國大陸鏡像代理。"
+        }
+      },
       "connection": {
         "connecting": "連線中",
         "offline": "離線",

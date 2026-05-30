@@ -120,7 +120,7 @@ def get_download_settings_snapshot() -> tuple[str, bool]:
         from ..database import session as db_session
 
         if db_session.SessionLocal is None:
-            return "huggingface", False
+            return "modelscope", False
         db = db_session.SessionLocal()
         try:
             row = get_download_settings(db)
@@ -128,4 +128,4 @@ def get_download_settings_snapshot() -> tuple[str, bool]:
         finally:
             db.close()
     except Exception:
-        return "huggingface", False
+        return "modelscope", False

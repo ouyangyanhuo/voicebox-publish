@@ -785,6 +785,18 @@
         "enabled": "已启用网络访问。重启应用以应用更改。",
         "disabled": "已禁用网络访问。重启应用以应用更改。"
       },
+      "downloads": {
+        "title": "下载",
+        "description": "选择模型和后端包的本机安装目录内下载源。",
+        "modelSource": {
+          "title": "模型下载源",
+          "description": "模型文件会存储在安装目录下的 model 文件夹中。"
+        },
+        "githubMirror": {
+          "title": "GitHub 下载镜像代理",
+          "description": "后端从 GitHub Releases 下载内容时使用内置的中国大陆镜像代理。"
+        }
+      },
       "connection": {
         "connecting": "连接中",
         "offline": "离线",

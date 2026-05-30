@@ -1,0 +1,6 @@
+{
+  "enabledMcpjsonServers": [
+    "voicebox"
+  ],
+  "enableAllProjectMcpServers": true
+}

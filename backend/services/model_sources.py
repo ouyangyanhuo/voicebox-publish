@@ -1,8 +1,8 @@
 """Model download source routing.
 
-HuggingFace remains the default source. When ModelScope is selected, downloads
-must use explicit mappings and local snapshot paths so no backend silently
-falls back to HuggingFace.
+ModelScope is the default source. ModelScope downloads must use explicit
+mappings and local snapshot paths so no backend silently falls back to
+HuggingFace.
 """
 
 from __future__ import annotations
@@ -40,7 +40,7 @@ MODELSCOPE_MODEL_IDS: dict[str, str] = {
 def get_model_source() -> str:
     source, _github_mirror_enabled = get_download_settings_snapshot()
     if source not in (HUGGINGFACE, MODELSCOPE):
-        return HUGGINGFACE
+        return MODELSCOPE
     return source
 
 
