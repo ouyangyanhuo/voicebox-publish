@@ -57,6 +57,17 @@ def test_modelscope_missing_mapping_fails_without_hf_fallback(monkeypatch):
         model_sources.resolve_model_reference("example/missing-model")
 
 
+def test_indextts2_is_only_user_facing_tts_model():
+    from backend.backends import TTS_ENGINES, get_tts_model_configs, get_model_config
+    from backend.models import GenerationRequest
+
+    assert TTS_ENGINES == {"indextts2": "IndexTTS2"}
+    configs = get_tts_model_configs()
+    assert [cfg.model_name for cfg in configs] == ["indextts2"]
+    assert get_model_config("indextts2").hf_repo_id == "IndexTeam/IndexTTS-2"
+    assert GenerationRequest(profile_id="p", text="hello").engine == "indextts2"
+
+
 def test_github_proxy_builder_uses_fixed_proxy(monkeypatch):
     monkeypatch.setattr(settings_service, "get_download_settings_snapshot", lambda: ("huggingface", True))
 

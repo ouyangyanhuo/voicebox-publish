@@ -52,6 +52,8 @@ async function fetchHuggingFaceModelInfo(repoId: string): Promise<HuggingFaceMod
 }
 
 const MODEL_DESCRIPTIONS: Record<string, string> = {
+  indextts2:
+    'IndexTTS2 by Bilibili IndexTTS Team. Emotionally expressive zero-shot voice cloning with text and vector emotion controls.',
   'qwen-tts-1.7B':
     'High-quality multilingual TTS by Alibaba. Supports 10 languages with natural prosody and voice cloning from short reference audio.',
   'qwen-tts-0.6B':
@@ -396,13 +398,7 @@ export function ModelManagement() {
 
   const voiceModels =
     modelStatus?.models.filter(
-      (m) =>
-        m.model_name.startsWith('qwen-tts') ||
-        m.model_name.startsWith('qwen-custom-voice') ||
-        m.model_name.startsWith('luxtts') ||
-        m.model_name.startsWith('chatterbox') ||
-        m.model_name.startsWith('tada') ||
-        m.model_name.startsWith('kokoro'),
+      (m) => m.model_name === 'indextts2',
     ) ?? [];
   const whisperModels = modelStatus?.models.filter((m) => m.model_name.startsWith('whisper')) ?? [];
   const llmModels = modelStatus?.models.filter((m) => m.model_name.startsWith('qwen3-')) ?? [];

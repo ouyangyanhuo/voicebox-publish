@@ -51,6 +51,7 @@ export function formatAbsoluteDate(date: string | Date): string {
 }
 
 const ENGINE_DISPLAY_NAMES: Record<string, string> = {
+  indextts2: 'IndexTTS2',
   qwen: 'Qwen',
   luxtts: 'LuxTTS',
   chatterbox: 'Chatterbox',
@@ -58,7 +59,7 @@ const ENGINE_DISPLAY_NAMES: Record<string, string> = {
 };
 
 export function formatEngineName(engine?: string, modelSize?: string): string {
-  const name = ENGINE_DISPLAY_NAMES[engine ?? 'qwen'] ?? engine ?? 'Qwen';
+  const name = ENGINE_DISPLAY_NAMES[engine ?? 'indextts2'] ?? engine ?? 'IndexTTS2';
   if (engine === 'qwen' && modelSize) {
     return `${name} ${modelSize}`;
   }

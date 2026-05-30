@@ -9,6 +9,7 @@ __pycache__/
 venv/
 env/
 ENV/
+.venv/
 *.prompt
 model/
 data/
@@ -71,3 +72,4 @@ backend/tests/results/
 backend/tests/fixtures/reference_voice.wav
 backend/tests/fixtures/reference_voice.txt
 CLAUDE.md
+backend/indextts2_worker/.venv/*

@@ -22,6 +22,7 @@ MODELSCOPE = "modelscope"
 # Conservative explicit mappings. Models not listed here fail fast when
 # ModelScope is selected.
 MODELSCOPE_MODEL_IDS: dict[str, str] = {
+    "IndexTeam/IndexTTS-2": "IndexTeam/IndexTTS-2",
     "Qwen/Qwen3-TTS-12Hz-1.7B-Base": "Qwen/Qwen3-TTS-12Hz-1.7B-Base",
     "Qwen/Qwen3-TTS-12Hz-0.6B-Base": "Qwen/Qwen3-TTS-12Hz-0.6B-Base",
     "Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice": "Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
@@ -65,6 +66,21 @@ def resolve_model_reference(hf_repo: str) -> str:
     if not is_modelscope_enabled():
         return hf_repo
     return download_modelscope_snapshot(hf_repo)
+
+
+def download_model_snapshot(hf_repo: str) -> str:
+    """Download the active source snapshot and return a local model directory."""
+    if is_modelscope_enabled():
+        return download_modelscope_snapshot(hf_repo)
+
+    try:
+        from huggingface_hub import snapshot_download
+    except Exception as exc:
+        raise RuntimeError("HuggingFace source is enabled, but huggingface_hub is not installed.") from exc
+
+    cache_dir = config.get_huggingface_models_dir()
+    logger.info("Downloading %s from HuggingFace into %s", hf_repo, cache_dir)
+    return snapshot_download(repo_id=hf_repo, cache_dir=str(cache_dir), token=None)
 
 
 def download_modelscope_snapshot(hf_repo: str) -> str:

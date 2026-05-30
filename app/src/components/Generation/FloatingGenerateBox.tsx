@@ -5,7 +5,11 @@ import { Dices, Loader2, SlidersHorizontal, Sparkles, Wand2 } from 'lucide-react
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Slider } from '@/components/ui/slider';
 import {
   Select,
   SelectContent,
@@ -25,7 +29,6 @@ import { useGenerationStore } from '@/stores/generationStore';
 import { useStoryStore } from '@/stores/storyStore';
 import { useUIStore } from '@/stores/uiStore';
 import { EngineModelSelector } from './EngineModelSelector';
-import { ParalinguisticInput } from './ParalinguisticInput';
 
 interface FloatingGenerateBoxProps {
   isPlayerOpen?: boolean;
@@ -144,20 +147,13 @@ export function FloatingGenerateBox({
   }, [watchedEngine, setSelectedEngine]);
 
   // Sync generation form language, engine, and effects with selected profile
-  type EngineValue =
-    | 'qwen'
-    | 'luxtts'
-    | 'chatterbox'
-    | 'chatterbox_turbo'
-    | 'tada'
-    | 'kokoro'
-    | 'qwen_custom_voice';
+  type EngineValue = 'indextts2';
   useEffect(() => {
     if (selectedProfile?.language) {
       form.setValue('language', selectedProfile.language as LanguageCode);
     }
     // Auto-switch engine to match the profile
-    const engine = selectedProfile?.default_engine ?? selectedProfile?.preset_engine;
+    const engine = 'indextts2';
     if (engine) {
       form.setValue('engine', engine as EngineValue);
     } else if (selectedProfile && selectedProfile.voice_type !== 'preset') {
@@ -165,7 +161,7 @@ export function FloatingGenerateBox({
       const currentEngine = form.getValues('engine');
       const presetEngines = new Set(['kokoro', 'qwen_custom_voice']);
       if (currentEngine && presetEngines.has(currentEngine)) {
-        form.setValue('engine', 'qwen');
+        form.setValue('engine', 'indextts2');
       }
     }
     // Pre-fill effects from profile defaults
@@ -292,57 +288,32 @@ export function FloatingGenerateBox({
                           transition={{ duration: 0.15, ease: 'easeOut' }}
                           style={{ overflow: 'hidden' }}
                         >
-                          {form.watch('engine') === 'chatterbox_turbo' ? (
-                            <ParalinguisticInput
-                              value={field.value}
-                              onChange={field.onChange}
-                              placeholder={
-                                isStoriesRoute && currentStory
-                                  ? t('generation.placeholder.storyWithEffects', {
-                                      name: currentStory.name,
+                          <Textarea
+                            {...field}
+                            ref={(node: HTMLTextAreaElement | null) => {
+                              textareaRef.current = node;
+                              if (typeof field.ref === 'function') {
+                                field.ref(node);
+                              }
+                            }}
+                            placeholder={
+                              isStoriesRoute && currentStory
+                                ? t('generation.placeholder.story', { name: currentStory.name })
+                                : selectedProfile
+                                  ? t('generation.placeholder.profile', {
+                                      name: selectedProfile.name,
                                     })
-                                  : selectedProfile
-                                    ? t('generation.placeholder.effectsHint')
-                                    : t('generation.placeholder.selectVoice')
-                              }
-                              className="px-3 py-2 resize-none bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none focus:ring-0 outline-none ring-0 rounded-2xl text-sm w-full"
-                              style={{
-                                minHeight: isExpanded ? '100px' : '32px',
-                                maxHeight: '300px',
-                                overflowY: 'auto',
-                              }}
-                              disabled={!selectedProfileId}
-                              onClick={() => setIsExpanded(true)}
-                              onFocus={() => setIsExpanded(true)}
-                            />
-                          ) : (
-                            <Textarea
-                              {...field}
-                              ref={(node: HTMLTextAreaElement | null) => {
-                                textareaRef.current = node;
-                                if (typeof field.ref === 'function') {
-                                  field.ref(node);
-                                }
-                              }}
-                              placeholder={
-                                isStoriesRoute && currentStory
-                                  ? t('generation.placeholder.story', { name: currentStory.name })
-                                  : selectedProfile
-                                    ? t('generation.placeholder.profile', {
-                                        name: selectedProfile.name,
-                                      })
-                                    : t('generation.placeholder.selectVoice')
-                              }
-                              className="resize-none bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none focus:ring-0 outline-none ring-0 rounded-2xl text-sm placeholder:text-muted-foreground/60 w-full"
-                              style={{
-                                minHeight: isExpanded ? '100px' : '32px',
-                                maxHeight: '300px',
-                              }}
-                              disabled={!selectedProfileId}
-                              onClick={() => setIsExpanded(true)}
-                              onFocus={() => setIsExpanded(true)}
-                            />
-                          )}
+                                  : t('generation.placeholder.selectVoice')
+                            }
+                            className="resize-none bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 focus:outline-none focus:ring-0 outline-none ring-0 rounded-2xl text-sm placeholder:text-muted-foreground/60 w-full"
+                            style={{
+                              minHeight: isExpanded ? '100px' : '32px',
+                              maxHeight: '300px',
+                            }}
+                            disabled={!selectedProfileId}
+                            onClick={() => setIsExpanded(true)}
+                            onFocus={() => setIsExpanded(true)}
+                          />
                         </motion.div>
                       </FormControl>
                       <FormMessage className="text-xs" />
@@ -438,7 +409,7 @@ export function FloatingGenerateBox({
 
                 {/* Instruct toggle — only for Qwen CustomVoice, which actually honors the kwarg */}
                 <AnimatePresence>
-                  {isExpanded && form.watch('engine') === 'qwen_custom_voice' && (
+                  {isExpanded && (
                     <motion.div
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -459,15 +430,15 @@ export function FloatingGenerateBox({
                           )}
                           aria-label={
                             isInstructExpanded
-                              ? t('generation.instruct.hide')
-                              : t('generation.instruct.show')
+                              ? 'Hide IndexTTS2 controls'
+                              : 'Show IndexTTS2 controls'
                           }
                           aria-pressed={isInstructExpanded}
                         >
                           <SlidersHorizontal className="h-4 w-4" />
                         </Button>
                         <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 whitespace-nowrap rounded-md bg-popover px-3 py-1.5 text-xs text-popover-foreground border border-border opacity-0 transition-opacity group-hover:opacity-100 z-[9999]">
-                          {t('generation.instruct.tooltip')}
+                          IndexTTS2 controls
                         </span>
                       </div>
                     </motion.div>
@@ -507,7 +478,7 @@ export function FloatingGenerateBox({
 
             {/* Additive instruct textarea — shown below main text when toggle is on and engine supports it */}
             <AnimatePresence>
-              {isInstructExpanded && form.watch('engine') === 'qwen_custom_voice' && (
+              {isInstructExpanded && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
@@ -515,24 +486,101 @@ export function FloatingGenerateBox({
                   transition={{ duration: 0.2, ease: 'easeOut' }}
                   className="overflow-hidden"
                 >
-                  <FormField
-                    control={form.control}
-                    name="instruct"
-                    render={({ field }) => (
-                      <FormItem className="mt-2">
-                        <FormControl>
-                          <Textarea
-                            {...field}
-                            placeholder={t('generation.instruct.placeholder')}
-                            className="resize-none bg-transparent border border-accent/20 focus-visible:ring-1 focus-visible:ring-accent/40 rounded-2xl text-sm placeholder:text-muted-foreground/60 w-full px-3 py-2"
-                            style={{ minHeight: '60px', maxHeight: '160px' }}
-                            maxLength={500}
+                  <div className="mt-3 grid gap-3 rounded-2xl border border-accent/20 bg-card/50 p-3">
+                    <FormField
+                      control={form.control}
+                      name="emoText"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Textarea
+                              {...field}
+                              placeholder="Emotion text"
+                              className="min-h-[52px] resize-none rounded-xl bg-background/60 text-xs"
+                              maxLength={1000}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <div className="grid grid-cols-2 gap-2">
+                      <FormField
+                        control={form.control}
+                        name="useEmoText"
+                        render={({ field }) => (
+                          <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <Checkbox checked={!!field.value} onCheckedChange={field.onChange} />
+                            Use emotion text
+                          </label>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="useRandom"
+                        render={({ field }) => (
+                          <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <Checkbox checked={!!field.value} onCheckedChange={field.onChange} />
+                            Random emotion seed
+                          </label>
+                        )}
+                      />
+                    </div>
+                    <FormField
+                      control={form.control}
+                      name="emoAlpha"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="flex items-center justify-between text-xs text-muted-foreground">
+                            <Label>Emotion alpha</Label>
+                            <span>{(field.value ?? 1).toFixed(2)}</span>
+                          </div>
+                          <Slider
+                            value={[field.value ?? 1]}
+                            min={0}
+                            max={1}
+                            step={0.05}
+                            onValueChange={(value) => field.onChange(value[0])}
                           />
-                        </FormControl>
-                        <FormMessage className="text-xs" />
-                      </FormItem>
-                    )}
-                  />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="grid grid-cols-2 gap-2">
+                      <FormField
+                        control={form.control}
+                        name="intervalSilence"
+                        render={({ field }) => (
+                          <FormItem>
+                            <Label className="text-xs text-muted-foreground">Silence ms</Label>
+                            <Input
+                              type="number"
+                              className="h-8 text-xs"
+                              value={field.value ?? 200}
+                              onChange={(event) => field.onChange(Number(event.target.value))}
+                            />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="maxTextTokensPerSegment"
+                        render={({ field }) => (
+                          <FormItem>
+                            <Label className="text-xs text-muted-foreground">Segment tokens</Label>
+                            <Input
+                              type="number"
+                              className="h-8 text-xs"
+                              value={field.value ?? 120}
+                              onChange={(event) => field.onChange(Number(event.target.value))}
+                            />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <EmotionVectorEditor
+                      values={form.watch('emoVector') ?? [0, 0, 0, 0, 0, 0, 0, 0]}
+                      onChange={(values) => form.setValue('emoVector', values)}
+                    />
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -572,7 +620,7 @@ export function FloatingGenerateBox({
                     name="language"
                     render={({ field }) => {
                       const engineLangs = getLanguageOptionsForEngine(
-                        form.watch('engine') || 'qwen',
+                        form.watch('engine') || 'indextts2',
                       );
                       return (
                         <FormItem className="flex-1 space-y-0">
@@ -635,5 +683,39 @@ export function FloatingGenerateBox({
         </Form>
       </motion.div>
     </motion.div>
+  );
+}
+
+const EMOTION_LABELS = ['Happy', 'Angry', 'Sad', 'Afraid', 'Disgust', 'Melancholy', 'Surprise', 'Calm'];
+
+function EmotionVectorEditor({
+  values,
+  onChange,
+}: {
+  values: number[];
+  onChange: (values: number[]) => void;
+}) {
+  return (
+    <div className="grid gap-2">
+      {EMOTION_LABELS.map((label, index) => (
+        <div key={label} className="grid grid-cols-[5.5rem_1fr_2rem] items-center gap-2">
+          <Label className="text-xs text-muted-foreground">{label}</Label>
+          <Slider
+            value={[values[index] ?? 0]}
+            min={0}
+            max={1.2}
+            step={0.05}
+            onValueChange={(next) => {
+              const copy = [...values];
+              copy[index] = next[0] ?? 0;
+              onChange(copy);
+            }}
+          />
+          <span className="text-right text-xs text-muted-foreground">
+            {(values[index] ?? 0).toFixed(2)}
+          </span>
+        </div>
+      ))}
+    </div>
   );
 }

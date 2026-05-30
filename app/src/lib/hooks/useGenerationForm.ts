@@ -10,7 +10,6 @@ import { useGeneration } from '@/lib/hooks/useGeneration';
 import { useModelDownloadToast } from '@/lib/hooks/useModelDownloadToast';
 import { useGenerationSettings } from '@/lib/hooks/useSettings';
 import { useGenerationStore } from '@/stores/generationStore';
-import { useUIStore } from '@/stores/uiStore';
 
 const generationSchema = z.object({
   text: z.string().min(1, '').max(50000),
@@ -18,17 +17,22 @@ const generationSchema = z.object({
   seed: z.number().int().optional(),
   modelSize: z.enum(['1.7B', '0.6B', '1B', '3B']).optional(),
   instruct: z.string().max(500).optional(),
-  engine: z
-    .enum([
-      'qwen',
-      'qwen_custom_voice',
-      'luxtts',
-      'chatterbox',
-      'chatterbox_turbo',
-      'tada',
-      'kokoro',
-    ])
-    .optional(),
+  engine: z.enum(['indextts2']).optional(),
+  emoAudioPrompt: z.string().max(1000).optional(),
+  emoAlpha: z.number().min(0).max(1).optional(),
+  emoVector: z.array(z.number().min(0).max(1.4)).length(8).optional(),
+  useEmoText: z.boolean().optional(),
+  emoText: z.string().max(1000).optional(),
+  useRandom: z.boolean().optional(),
+  intervalSilence: z.number().int().min(0).max(5000).optional(),
+  maxTextTokensPerSegment: z.number().int().min(20).max(500).optional(),
+  topP: z.number().min(0).max(1).optional(),
+  topK: z.number().int().min(1).max(200).optional(),
+  temperature: z.number().min(0).max(2).optional(),
+  lengthPenalty: z.number().min(-10).max(10).optional(),
+  numBeams: z.number().int().min(1).max(10).optional(),
+  repetitionPenalty: z.number().min(0).max(30).optional(),
+  maxMelTokens: z.number().int().min(100).max(10000).optional(),
   personality: z.boolean().optional(),
 });
 
@@ -48,7 +52,6 @@ export function useGenerationForm(options: UseGenerationFormOptions = {}) {
   const maxChunkChars = genSettings?.max_chunk_chars ?? 800;
   const crossfadeMs = genSettings?.crossfade_ms ?? 50;
   const normalizeAudio = genSettings?.normalize_audio ?? true;
-  const selectedEngine = useUIStore((state) => state.selectedEngine);
   const [downloadingModelName, setDownloadingModelName] = useState<string | null>(null);
   const [downloadingDisplayName, setDownloadingDisplayName] = useState<string | null>(null);
 
@@ -64,9 +67,21 @@ export function useGenerationForm(options: UseGenerationFormOptions = {}) {
       text: '',
       language: 'en',
       seed: undefined,
-      modelSize: '1.7B',
+      modelSize: undefined,
       instruct: '',
-      engine: (selectedEngine as GenerationFormValues['engine']) || 'qwen',
+      engine: 'indextts2',
+      emoAlpha: 1,
+      emoVector: [0, 0, 0, 0, 0, 0, 0, 0],
+      useEmoText: false,
+      useRandom: false,
+      intervalSilence: 200,
+      maxTextTokensPerSegment: 120,
+      topP: 0.8,
+      topK: 30,
+      temperature: 0.8,
+      numBeams: 3,
+      repetitionPenalty: 10,
+      maxMelTokens: 1500,
       personality: false,
       ...options.defaultValues,
     },
@@ -86,43 +101,9 @@ export function useGenerationForm(options: UseGenerationFormOptions = {}) {
     }
 
     try {
-      const engine = data.engine || 'qwen';
-      const modelName =
-        engine === 'luxtts'
-          ? 'luxtts'
-          : engine === 'chatterbox'
-            ? 'chatterbox-tts'
-            : engine === 'chatterbox_turbo'
-              ? 'chatterbox-turbo'
-              : engine === 'tada'
-                ? data.modelSize === '3B'
-                  ? 'tada-3b-ml'
-                  : 'tada-1b'
-                : engine === 'kokoro'
-                  ? 'kokoro'
-                  : engine === 'qwen_custom_voice'
-                    ? `qwen-custom-voice-${data.modelSize}`
-                    : `qwen-tts-${data.modelSize}`;
-      const displayName =
-        engine === 'luxtts'
-          ? 'LuxTTS'
-          : engine === 'chatterbox'
-            ? 'Chatterbox TTS'
-            : engine === 'chatterbox_turbo'
-              ? 'Chatterbox Turbo'
-              : engine === 'tada'
-                ? data.modelSize === '3B'
-                  ? 'TADA 3B Multilingual'
-                  : 'TADA 1B'
-                : engine === 'kokoro'
-                  ? 'Kokoro 82M'
-                  : engine === 'qwen_custom_voice'
-                    ? data.modelSize === '1.7B'
-                      ? 'Qwen CustomVoice 1.7B'
-                      : 'Qwen CustomVoice 0.6B'
-                    : data.modelSize === '1.7B'
-                      ? 'Qwen TTS 1.7B'
-                      : 'Qwen TTS 0.6B';
+      const engine = 'indextts2' as const;
+      const modelName = 'indextts2';
+      const displayName = 'IndexTTS2';
 
       // Check if model needs downloading
       try {
@@ -137,11 +118,6 @@ export function useGenerationForm(options: UseGenerationFormOptions = {}) {
         console.error('Failed to check model status:', error);
       }
 
-      const hasModelSizes =
-        engine === 'qwen' || engine === 'qwen_custom_voice' || engine === 'tada';
-      // Only Qwen CustomVoice actually honors the instruct kwarg at model level.
-      // Base Qwen3-TTS accepts the kwarg but ignores it.
-      const supportsInstruct = engine === 'qwen_custom_voice';
       const effectsChain = options.getEffectsChain?.();
       // This now returns immediately with status="generating"
       const result = await generation.mutateAsync({
@@ -149,9 +125,24 @@ export function useGenerationForm(options: UseGenerationFormOptions = {}) {
         text: data.text,
         language: data.language,
         seed: data.seed,
-        model_size: hasModelSizes ? data.modelSize : undefined,
+        model_size: undefined,
         engine,
-        instruct: supportsInstruct ? data.instruct || undefined : undefined,
+        instruct: undefined,
+        emo_audio_prompt: data.emoAudioPrompt || undefined,
+        emo_alpha: data.emoAlpha,
+        emo_vector: data.emoVector,
+        use_emo_text: data.useEmoText || undefined,
+        emo_text: data.emoText || undefined,
+        use_random: data.useRandom || undefined,
+        interval_silence: data.intervalSilence,
+        max_text_tokens_per_segment: data.maxTextTokensPerSegment,
+        top_p: data.topP,
+        top_k: data.topK,
+        temperature: data.temperature,
+        length_penalty: data.lengthPenalty,
+        num_beams: data.numBeams,
+        repetition_penalty: data.repetitionPenalty,
+        max_mel_tokens: data.maxMelTokens,
         personality: data.personality || undefined,
         max_chunk_chars: maxChunkChars,
         crossfade_ms: crossfadeMs,
@@ -167,9 +158,24 @@ export function useGenerationForm(options: UseGenerationFormOptions = {}) {
         text: '',
         language: data.language,
         seed: undefined,
-        modelSize: data.modelSize,
+        modelSize: undefined,
         instruct: '',
-        engine: data.engine,
+        engine,
+        emoAudioPrompt: data.emoAudioPrompt,
+        emoAlpha: data.emoAlpha,
+        emoVector: data.emoVector,
+        useEmoText: data.useEmoText,
+        emoText: data.emoText,
+        useRandom: data.useRandom,
+        intervalSilence: data.intervalSilence,
+        maxTextTokensPerSegment: data.maxTextTokensPerSegment,
+        topP: data.topP,
+        topK: data.topK,
+        temperature: data.temperature,
+        lengthPenalty: data.lengthPenalty,
+        numBeams: data.numBeams,
+        repetitionPenalty: data.repetitionPenalty,
+        maxMelTokens: data.maxMelTokens,
         personality: data.personality,
       });
       options.onSuccess?.(result.id);

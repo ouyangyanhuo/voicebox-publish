@@ -83,9 +83,24 @@ class GenerationRequest(BaseModel):
     text: str = Field(..., min_length=1, max_length=50000)
     language: str = Field(default="en", pattern="^(zh|en|ja|ko|de|fr|ru|pt|es|it|he|ar|da|el|fi|hi|ms|nl|no|pl|sv|sw|tr)$")
     seed: Optional[int] = Field(None, ge=0)
-    model_size: Optional[str] = Field(default="1.7B", pattern="^(1\\.7B|0\\.6B|1B|3B)$")
+    model_size: Optional[str] = Field(default=None, pattern="^(1\\.7B|0\\.6B|1B|3B)$")
     instruct: Optional[str] = Field(None, max_length=500)
-    engine: Optional[str] = Field(default="qwen", pattern="^(qwen|qwen_custom_voice|luxtts|chatterbox|chatterbox_turbo|tada|kokoro)$")
+    engine: Optional[str] = Field(default="indextts2", pattern="^indextts2$")
+    emo_audio_prompt: Optional[str] = Field(None, max_length=1000)
+    emo_alpha: Optional[float] = Field(default=1.0, ge=0.0, le=1.0)
+    emo_vector: Optional[List[float]] = Field(default=None, min_length=8, max_length=8)
+    use_emo_text: bool = False
+    emo_text: Optional[str] = Field(None, max_length=1000)
+    use_random: bool = False
+    interval_silence: Optional[int] = Field(default=200, ge=0, le=5000)
+    max_text_tokens_per_segment: Optional[int] = Field(default=120, ge=20, le=500)
+    top_p: Optional[float] = Field(default=None, ge=0.0, le=1.0)
+    top_k: Optional[int] = Field(default=None, ge=1, le=200)
+    temperature: Optional[float] = Field(default=None, ge=0.0, le=2.0)
+    length_penalty: Optional[float] = Field(default=None, ge=-10.0, le=10.0)
+    num_beams: Optional[int] = Field(default=None, ge=1, le=10)
+    repetition_penalty: Optional[float] = Field(default=None, ge=0.0, le=30.0)
+    max_mel_tokens: Optional[int] = Field(default=None, ge=100, le=10000)
     personality: bool = Field(
         default=False,
         description="When true and the profile has a personality prompt, the input text is rewritten in-character before TTS.",
@@ -113,7 +128,7 @@ class GenerationResponse(BaseModel):
     duration: Optional[float] = None
     seed: Optional[int] = None
     instruct: Optional[str] = None
-    engine: Optional[str] = "qwen"
+    engine: Optional[str] = "indextts2"
     model_size: Optional[str] = None
     status: str = "completed"
     error: Optional[str] = None
@@ -148,7 +163,7 @@ class HistoryResponse(BaseModel):
     duration: Optional[float] = None
     seed: Optional[int] = None
     instruct: Optional[str] = None
-    engine: Optional[str] = "qwen"
+    engine: Optional[str] = "indextts2"
     model_size: Optional[str] = None
     status: str = "completed"
     error: Optional[str] = None
@@ -334,7 +349,7 @@ class MCPClientBindingResponse(BaseModel):
     profile_id: Optional[str] = None
     default_engine: Optional[str] = Field(
         None,
-        pattern="^(qwen|qwen_custom_voice|luxtts|chatterbox|chatterbox_turbo|tada|kokoro)$",
+        pattern="^indextts2$",
     )
     default_personality: bool = False
     last_seen_at: Optional[datetime] = None
@@ -353,7 +368,7 @@ class MCPClientBindingUpsert(BaseModel):
     profile_id: Optional[str] = None
     default_engine: Optional[str] = Field(
         None,
-        pattern="^(qwen|qwen_custom_voice|luxtts|chatterbox|chatterbox_turbo|tada|kokoro)$",
+        pattern="^indextts2$",
     )
     default_personality: bool = False
 
@@ -372,7 +387,7 @@ class SpeakRequest(BaseModel):
     )
     engine: Optional[str] = Field(
         None,
-        pattern="^(qwen|qwen_custom_voice|luxtts|chatterbox|chatterbox_turbo|tada|kokoro)$",
+        pattern="^indextts2$",
     )
     personality: Optional[bool] = Field(
         None,

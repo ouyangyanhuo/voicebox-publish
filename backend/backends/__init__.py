@@ -208,13 +208,7 @@ _llm_backends_lock = threading.Lock()
 # Supported TTS engines — keyed by engine name, value is the backend class import path.
 # The factory function uses this for the if/elif chain; the model configs live on the backend classes.
 TTS_ENGINES = {
-    "qwen": "Qwen TTS",
-    "qwen_custom_voice": "Qwen CustomVoice",
-    "luxtts": "LuxTTS",
-    "chatterbox": "Chatterbox TTS",
-    "chatterbox_turbo": "Chatterbox Turbo",
-    "tada": "TADA",
-    "kokoro": "Kokoro",
+    "indextts2": "IndexTTS2",
 }
 
 LLM_ENGINES = {
@@ -367,6 +361,22 @@ def _get_non_qwen_tts_configs() -> list[ModelConfig]:
     ]
 
 
+def _get_indextts2_configs() -> list[ModelConfig]:
+    """Return the only user-facing TTS model config."""
+    return [
+        ModelConfig(
+            model_name="indextts2",
+            display_name="IndexTTS2",
+            engine="indextts2",
+            hf_repo_id="IndexTeam/IndexTTS-2",
+            size_mb=7000,
+            needs_trim=False,
+            supports_instruct=False,
+            languages=["zh", "en"],
+        )
+    ]
+
+
 def _get_whisper_configs() -> list[ModelConfig]:
     """Return Whisper STT model configs."""
     return [
@@ -462,9 +472,7 @@ def _get_qwen_llm_configs() -> list[ModelConfig]:
 def get_all_model_configs() -> list[ModelConfig]:
     """Return the full list of model configs (TTS + STT + LLM)."""
     return (
-        _get_qwen_model_configs()
-        + _get_qwen_custom_voice_configs()
-        + _get_non_qwen_tts_configs()
+        _get_indextts2_configs()
         + _get_whisper_configs()
         + _get_qwen_llm_configs()
     )
@@ -472,7 +480,7 @@ def get_all_model_configs() -> list[ModelConfig]:
 
 def get_tts_model_configs() -> list[ModelConfig]:
     """Return only TTS model configs."""
-    return _get_qwen_model_configs() + _get_qwen_custom_voice_configs() + _get_non_qwen_tts_configs()
+    return _get_indextts2_configs()
 
 
 def get_llm_model_configs() -> list[ModelConfig]:
@@ -644,12 +652,12 @@ def get_model_load_func(config: ModelConfig):
 
 def get_tts_backend() -> TTSBackend:
     """
-    Get or create the default (Qwen) TTS backend instance based on platform.
+    Get or create the default IndexTTS2 TTS backend instance.
 
     Returns:
         TTS backend instance (MLX or PyTorch)
     """
-    return get_tts_backend_for_engine("qwen")
+    return get_tts_backend_for_engine("indextts2")
 
 
 def get_tts_backend_for_engine(engine: str) -> TTSBackend:
@@ -674,7 +682,11 @@ def get_tts_backend_for_engine(engine: str) -> TTSBackend:
         if engine in _tts_backends:
             return _tts_backends[engine]
 
-        if engine == "qwen":
+        if engine == "indextts2":
+            from .indextts2_backend import IndexTTS2Backend
+
+            backend = IndexTTS2Backend()
+        elif engine == "qwen":
             backend_type = get_backend_type()
             if backend_type == "mlx":
                 from .mlx_backend import MLXTTSBackend

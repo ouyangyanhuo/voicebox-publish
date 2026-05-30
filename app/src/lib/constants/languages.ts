@@ -1,11 +1,7 @@
 /**
  * Supported languages for voice generation, per engine.
  *
- * Qwen3-TTS supports 10 languages.
- * LuxTTS is English-only.
- * Chatterbox Multilingual supports 23 languages.
- * Chatterbox Turbo is English-only.
- * Kokoro supports 8 languages.
+ * IndexTTS2 is the only user-facing generation engine.
  */
 
 /** All languages that any engine supports. */
@@ -39,6 +35,7 @@ export type LanguageCode = keyof typeof ALL_LANGUAGES;
 
 /** Per-engine supported language codes. */
 export const ENGINE_LANGUAGES: Record<string, readonly LanguageCode[]> = {
+  indextts2: ['zh', 'en'],
   qwen: ['zh', 'en', 'ja', 'ko', 'de', 'fr', 'ru', 'pt', 'es', 'it'],
   luxtts: ['en'],
   chatterbox: [
@@ -74,7 +71,7 @@ export const ENGINE_LANGUAGES: Record<string, readonly LanguageCode[]> = {
 
 /** Helper: get language options for a given engine. */
 export function getLanguageOptionsForEngine(engine: string) {
-  const codes = ENGINE_LANGUAGES[engine] ?? ENGINE_LANGUAGES.qwen;
+  const codes = ENGINE_LANGUAGES[engine] ?? ENGINE_LANGUAGES.indextts2;
   return codes.map((code) => ({
     value: code,
     label: ALL_LANGUAGES[code],

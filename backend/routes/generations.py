@@ -50,7 +50,27 @@ def _get_or_create_import_profile(db: Session) -> DBVoiceProfile:
 
 
 def _resolve_generation_engine(data: models.GenerationRequest, profile) -> str:
-    return data.engine or getattr(profile, "default_engine", None) or getattr(profile, "preset_engine", None) or "qwen"
+    return "indextts2"
+
+
+def _indextts2_options(data: models.GenerationRequest) -> dict:
+    return {
+        "emo_audio_prompt": data.emo_audio_prompt,
+        "emo_alpha": data.emo_alpha,
+        "emo_vector": data.emo_vector,
+        "use_emo_text": data.use_emo_text,
+        "emo_text": data.emo_text,
+        "use_random": data.use_random,
+        "interval_silence": data.interval_silence,
+        "max_text_tokens_per_segment": data.max_text_tokens_per_segment,
+        "top_p": data.top_p,
+        "top_k": data.top_k,
+        "temperature": data.temperature,
+        "length_penalty": data.length_penalty,
+        "num_beams": data.num_beams,
+        "repetition_penalty": data.repetition_penalty,
+        "max_mel_tokens": data.max_mel_tokens,
+    }
 
 
 @router.post("/generate", response_model=models.GenerationResponse)
@@ -139,6 +159,7 @@ async def generate_speech(
             mode="generate",
             max_chunk_chars=data.max_chunk_chars,
             crossfade_ms=data.crossfade_ms,
+            indextts2_options=_indextts2_options(data),
         )
     )
 
@@ -176,8 +197,8 @@ async def retry_generation(generation_id: str, db: Session = Depends(get_db)):
             profile_id=gen.profile_id,
             text=gen.text,
             language=gen.language,
-            engine=gen.engine or "qwen",
-            model_size=gen.model_size or "1.7B",
+            engine=gen.engine or "indextts2",
+            model_size=gen.model_size or "default",
             seed=gen.seed,
             instruct=gen.instruct,
             mode="retry",
@@ -220,8 +241,8 @@ async def regenerate_generation(generation_id: str, db: Session = Depends(get_db
             profile_id=gen.profile_id,
             text=gen.text,
             language=gen.language,
-            engine=gen.engine or "qwen",
-            model_size=gen.model_size or "1.7B",
+            engine=gen.engine or "indextts2",
+            model_size=gen.model_size or "default",
             seed=gen.seed,
             instruct=gen.instruct,
             mode="regenerate",
@@ -362,6 +383,7 @@ async def stream_speech(
         max_chunk_chars=data.max_chunk_chars,
         crossfade_ms=data.crossfade_ms,
         trim_fn=trim_fn,
+        indextts2_options=_indextts2_options(data),
     )
 
     effects_chain_config = None

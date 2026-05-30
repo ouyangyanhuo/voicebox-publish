@@ -107,6 +107,8 @@ def build_server(cuda=False):
             "--hidden-import",
             "backend.backends",
             "--hidden-import",
+            "backend.backends.indextts2_backend",
+            "--hidden-import",
             "backend.backends.pytorch_backend",
             "--hidden-import",
             "backend.backends.qwen_custom_voice_backend",

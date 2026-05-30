@@ -96,7 +96,7 @@ async def get_generation(
         duration=gen.duration,
         seed=gen.seed,
         instruct=gen.instruct,
-        engine=gen.engine or "qwen",
+        engine=gen.engine or "indextts2",
         model_size=gen.model_size,
         status=gen.status or "completed",
         error=gen.error,

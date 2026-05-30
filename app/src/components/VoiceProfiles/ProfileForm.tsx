@@ -61,15 +61,9 @@ import { AudioSampleUpload } from './AudioSampleUpload';
 import { SampleList } from './SampleList';
 
 const MAX_AUDIO_DURATION_SECONDS = 30;
-const PRESET_ONLY_ENGINES = new Set(['kokoro', 'qwen_custom_voice']);
+const PRESET_ONLY_ENGINES = new Set<string>();
 const DEFAULT_ENGINE_OPTIONS = [
-  { value: 'qwen', label: 'Qwen3-TTS' },
-  { value: 'qwen_custom_voice', label: 'Qwen CustomVoice' },
-  { value: 'luxtts', label: 'LuxTTS' },
-  { value: 'chatterbox', label: 'Chatterbox' },
-  { value: 'chatterbox_turbo', label: 'Chatterbox Turbo' },
-  { value: 'tada', label: 'TADA' },
-  { value: 'kokoro', label: 'Kokoro 82M' },
+  { value: 'indextts2', label: 'IndexTTS2' },
 ] as const;
 
 function makeProfileSchema(t: (key: string) => string) {
@@ -152,7 +146,7 @@ export function ProfileForm() {
   const [audioDuration, setAudioDuration] = useState<number | null>(null);
   const [isValidatingAudio, setIsValidatingAudio] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  const [selectedPresetEngine, setSelectedPresetEngine] = useState<string>('kokoro');
+  const [selectedPresetEngine, setSelectedPresetEngine] = useState<string>('indextts2');
   const [selectedPresetVoiceId, setSelectedPresetVoiceId] = useState<string>('');
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const { isPlaying, playPause, cleanup: cleanupAudio } = useAudioPlayer();
@@ -868,7 +862,7 @@ export function ProfileForm() {
                           <button
                             type="button"
                             onClick={() => setVoiceSource('builtin')}
-                            className={`inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-md transition-colors ${
+                            className={`hidden items-center gap-2 px-3 py-1.5 text-sm rounded-md transition-colors ${
                               voiceSource === 'builtin'
                                 ? 'bg-accent text-accent-foreground shadow-sm'
                                 : 'text-muted-foreground hover:text-foreground'

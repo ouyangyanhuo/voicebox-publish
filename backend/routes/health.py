@@ -135,8 +135,8 @@ async def health():
     try:
         from ..backends import get_model_config
 
-        default_config = get_model_config("qwen-tts-1.7B")
-        default_model_id = default_config.hf_repo_id if default_config else "Qwen/Qwen3-TTS-12Hz-1.7B-Base"
+        default_config = get_model_config("indextts2")
+        default_model_id = default_config.hf_repo_id if default_config else "IndexTeam/IndexTTS-2"
 
         from ..services.model_sources import is_model_cached
 

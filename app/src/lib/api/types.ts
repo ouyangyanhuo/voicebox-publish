@@ -71,14 +71,22 @@ export interface GenerationRequest {
   language: LanguageCode;
   seed?: number;
   model_size?: '1.7B' | '0.6B' | '1B' | '3B';
-  engine?:
-    | 'qwen'
-    | 'qwen_custom_voice'
-    | 'luxtts'
-    | 'chatterbox'
-    | 'chatterbox_turbo'
-    | 'tada'
-    | 'kokoro';
+  engine?: 'indextts2';
+  emo_audio_prompt?: string;
+  emo_alpha?: number;
+  emo_vector?: number[];
+  use_emo_text?: boolean;
+  emo_text?: string;
+  use_random?: boolean;
+  interval_silence?: number;
+  max_text_tokens_per_segment?: number;
+  top_p?: number;
+  top_k?: number;
+  temperature?: number;
+  length_penalty?: number;
+  num_beams?: number;
+  repetition_penalty?: number;
+  max_mel_tokens?: number;
   instruct?: string;
   /** When true and the profile has a personality prompt, input text is rewritten in-character before TTS. */
   personality?: boolean;

@@ -72,7 +72,7 @@ class Generation(Base):
     duration = Column(Float, nullable=True)
     seed = Column(Integer)
     instruct = Column(Text)
-    engine = Column(String, default="qwen")
+    engine = Column(String, default="indextts2")
     model_size = Column(String, nullable=True)
     status = Column(String, default="completed")
     error = Column(Text, nullable=True)

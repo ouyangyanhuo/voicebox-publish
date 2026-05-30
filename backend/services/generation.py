@@ -41,6 +41,7 @@ async def run_generation(
     mode: Literal["generate", "retry", "regenerate"],
     max_chunk_chars: Optional[int] = None,
     crossfade_ms: Optional[int] = None,
+    indextts2_options: Optional[dict] = None,
     version_id: Optional[str] = None,
 ) -> None:
     """Execute TTS inference and persist the result.
@@ -69,6 +70,8 @@ async def run_generation(
             use_cache=True,
             engine=engine,
         )
+        if indextts2_options and engine == "indextts2":
+            voice_prompt["indextts2"] = indextts2_options
 
         await history.update_generation_status(generation_id, "generating", bg_db)
         trim_fn = trim_tts_output if engine_needs_trim(engine) else None

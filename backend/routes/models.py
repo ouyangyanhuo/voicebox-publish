@@ -47,13 +47,15 @@ def _copy_with_progress(src: Path, dst: Path, progress_manager, copied_so_far: i
 
 
 @router.post("/models/load")
-async def load_model(model_size: str = "1.7B"):
-    """Manually load TTS model."""
+async def load_model(model_size: str = "default"):
+    """Manually prepare the IndexTTS2 model snapshot."""
     from ..services import tts
 
     try:
         tts_model = tts.get_tts_model()
-        await tts_model.load_model_async(model_size)
+        result = tts_model.load_model(model_size)
+        if asyncio.iscoroutine(result):
+            await result
         return {"message": f"Model {model_size} loaded successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -61,7 +63,7 @@ async def load_model(model_size: str = "1.7B"):
 
 @router.post("/models/unload")
 async def unload_model():
-    """Unload the default Qwen TTS model to free memory."""
+    """Unload the default IndexTTS2 backend handle."""
     from ..services import tts
 
     try:

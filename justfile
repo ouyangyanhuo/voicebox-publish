@@ -97,6 +97,44 @@ setup-python:
 setup-js:
     bun install
 
+# Create isolated IndexTTS2 worker venv (heavy ML deps, kept separate from main backend)
+[unix]
+setup-indextts2:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    worker_venv="{{ backend_dir }}/indextts2_worker/.venv"
+    if [ -d "$worker_venv" ]; then
+        echo "IndexTTS2 worker venv already exists at $worker_venv"
+        echo "To reinstall, remove it first: rm -rf $worker_venv"
+        exit 0
+    fi
+    echo "Creating IndexTTS2 worker venv..."
+    {{ system_python }} -m venv "$worker_venv"
+    echo "Installing IndexTTS2 worker dependencies (this may take a while)..."
+    "$worker_venv/bin/python" -m pip install --upgrade pip -q
+    GIT_LFS_SKIP_SMUDGE=1 "$worker_venv/bin/pip" install -r {{ backend_dir }}/indextts2_worker/requirements.txt
+    echo ""
+    echo "IndexTTS2 worker venv ready at $worker_venv"
+    echo "No INDEXTTS2_PYTHON env var needed — backend auto-detects it."
+
+[windows]
+setup-indextts2:
+    $workerVenv = "{{ backend_dir }}\indextts2_worker\.venv"; \
+    if (Test-Path $workerVenv) { \
+        Write-Host "IndexTTS2 worker venv already exists at $workerVenv"; \
+        Write-Host "To reinstall, remove it first: Remove-Item -Recurse -Force $workerVenv"; \
+        exit 0; \
+    }; \
+    Write-Host "Creating IndexTTS2 worker venv..."; \
+    & {{ system_python }} -m venv $workerVenv; \
+    Write-Host "Installing IndexTTS2 worker dependencies (this may take a while)..."; \
+    & "$workerVenv\Scripts\python.exe" -m pip install --upgrade pip -q; \
+    $env:GIT_LFS_SKIP_SMUDGE = "1"; \
+    & "$workerVenv\Scripts\pip.exe" install -r {{ backend_dir }}\indextts2_worker\requirements.txt; \
+    Write-Host ""; \
+    Write-Host "IndexTTS2 worker venv ready at $workerVenv"; \
+    Write-Host "No INDEXTTS2_PYTHON env var needed — backend auto-detects it."
+
 # ─── Development ──────────────────────────────────────────────────────
 
 # Start backend (if not already running) + frontend for development
