@@ -8,17 +8,17 @@ import uvicorn
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Voicebox FastAPI sidecar server")
+    parser = argparse.ArgumentParser(description="AudioScribe FastAPI sidecar server")
     parser.add_argument("--host", default="127.0.0.1")
-    parser.add_argument("--port", default=int(os.environ.get("VOICEBOX_PORT", "17493")), type=int)
-    parser.add_argument("--install-dir", default=os.environ.get("VOICEBOX_INSTALL_DIR"))
+    parser.add_argument("--port", default=int(os.environ.get("AUDIOSCRIBE_PORT", "17493")), type=int)
+    parser.add_argument("--install-dir", default=os.environ.get("AUDIOSCRIBE_INSTALL_DIR"))
     args = parser.parse_args()
 
     if args.install_dir:
-        os.environ["VOICEBOX_INSTALL_DIR"] = str(Path(args.install_dir).resolve())
+        os.environ["AUDIOSCRIBE_INSTALL_DIR"] = str(Path(args.install_dir).resolve())
 
     uvicorn.run(
-        "voicebox.app:create_app",
+        "audioscribe.app:create_app",
         factory=True,
         host=args.host,
         port=args.port,

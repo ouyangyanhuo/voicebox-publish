@@ -18,7 +18,7 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocale] = useState<Locale>(() => {
-    const saved = window.localStorage.getItem('voicebox.locale');
+    const saved = window.localStorage.getItem('audioscribe.locale');
     return saved === 'en' ? 'en' : 'zh';
   });
 
@@ -26,7 +26,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     () => ({
       locale,
       setLocale: (next) => {
-        window.localStorage.setItem('voicebox.locale', next);
+        window.localStorage.setItem('audioscribe.locale', next);
         setLocale(next);
       },
       t: (key) => resources[locale][key] ?? resources.zh[key] ?? key,

@@ -40,8 +40,8 @@ def ensure_pyinstaller(python: Path) -> None:
 def backend_binary_name() -> str:
     suffix = ".exe" if os.name == "nt" else ""
     if TARGET_TRIPLE:
-        return f"voicebox-backend-{TARGET_TRIPLE}{suffix}"
-    return f"voicebox-backend{suffix}"
+        return f"audioscribe-backend-{TARGET_TRIPLE}{suffix}"
+    return f"audioscribe-backend{suffix}"
 
 
 def pyinstaller_window_options() -> list[str]:
@@ -71,7 +71,7 @@ def build_backend() -> Path:
             "--onefile",
             *pyinstaller_window_options(),
             "--name",
-            "voicebox-backend",
+            "audioscribe-backend",
             "--distpath",
             str(dist),
             "--workpath",
@@ -80,12 +80,12 @@ def build_backend() -> Path:
             str(spec),
             "--paths",
             str(BACKEND),
-            str(BACKEND / "voicebox" / "server.py"),
+            str(BACKEND / "audioscribe" / "server.py"),
         ],
         env=dev.local_tool_env(),
     )
 
-    source = dist / ("voicebox-backend.exe" if os.name == "nt" else "voicebox-backend")
+    source = dist / ("audioscribe-backend.exe" if os.name == "nt" else "audioscribe-backend")
     if not source.exists():
         raise RuntimeError(f"Backend binary was not created: {source}")
 
@@ -106,7 +106,7 @@ def build_tauri() -> None:
     env["TAURI_CONFIG"] = json.dumps(
         {
             "bundle": {
-                "externalBin": ["binaries/voicebox-backend"],
+                "externalBin": ["binaries/audioscribe-backend"],
             }
         }
     )

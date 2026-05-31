@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-app = FastAPI(title="Voicebox IndexTTS2 Worker")
+app = FastAPI(title="AudioScribe IndexTTS2 Worker")
 
 
 class WorkerGenerateRequest(BaseModel):

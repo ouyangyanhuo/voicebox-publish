@@ -1,6 +1,6 @@
-# Voicebox
+# AudioScribe
 
-Voicebox is being rebuilt as a local desktop TTS authoring app using IndexTTS2 as the only speech generation engine.
+AudioScribe is being rebuilt as a local desktop TTS authoring app using IndexTTS2 as the only speech generation engine.
 
 Core stack:
 
@@ -29,7 +29,7 @@ Before implementing real IndexTTS2 inference code, complete `docs/INDEXTTS2_DEPE
 Install `just`, Python, and Bun. Rust/Cargo is optional for the Tauri desktop shell.
 
 ```powershell
-cd F:\Project\voicebox
+cd F:\Project\audioscribe
 just dev
 ```
 

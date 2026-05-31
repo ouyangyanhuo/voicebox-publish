@@ -6,13 +6,13 @@ use tauri::{WebviewUrl, WebviewWindowBuilder};
 /// IPC command: return the install directory to the frontend.
 #[tauri::command]
 fn get_install_dir() -> String {
-    env::var("VOICEBOX_INSTALL_DIR").unwrap_or_default()
+    env::var("AUDIOSCRIBE_INSTALL_DIR").unwrap_or_default()
 }
 
 fn main() {
     // Determine install directory
     let install_dir = if cfg!(debug_assertions) {
-        env::var("VOICEBOX_INSTALL_DIR")
+        env::var("AUDIOSCRIBE_INSTALL_DIR")
             .map(std::path::PathBuf::from)
             .unwrap_or_else(|_| env::current_dir().expect("Failed to get current directory"))
     } else {
@@ -28,7 +28,7 @@ fn main() {
     env::set_var("TAURI_APPDATA", &tauri_data);
 
     // Ensure the sidecar backend knows the install directory
-    env::set_var("VOICEBOX_INSTALL_DIR", &install_dir);
+    env::set_var("AUDIOSCRIBE_INSTALL_DIR", &install_dir);
 
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![get_install_dir])
@@ -45,7 +45,7 @@ fn main() {
             };
 
             WebviewWindowBuilder::new(app, "main", url)
-                .title("Voicebox")
+                .title("AudioScribe")
                 .inner_size(1280.0, 820.0)
                 .min_inner_size(960.0, 640.0)
                 .data_directory(webview_data)
@@ -54,5 +54,5 @@ fn main() {
             Ok(())
         })
         .run(tauri::generate_context!())
-        .expect("error while running Voicebox");
+        .expect("error while running AudioScribe");
 }

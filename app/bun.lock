@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "voicebox-app",
+      "name": "audioscribe-app",
       "dependencies": {
         "@tauri-apps/api": "^2.0.0",
         "lucide-react": "^0.468.0",

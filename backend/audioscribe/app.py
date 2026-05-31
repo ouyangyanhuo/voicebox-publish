@@ -13,7 +13,7 @@ def create_app() -> FastAPI:
     paths = initialize_runtime()
     initialize_database(paths.database_path)
 
-    app = FastAPI(title="Voicebox API", version=__version__)
+    app = FastAPI(title="AudioScribe API", version=__version__)
     app.state.paths = paths
 
     app.add_middleware(

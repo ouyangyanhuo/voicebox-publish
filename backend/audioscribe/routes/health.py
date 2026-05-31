@@ -15,7 +15,7 @@ def _check_directory(path: Path) -> DirectoryStatus:
     writable = False
     try:
         path.mkdir(parents=True, exist_ok=True)
-        probe = path / ".voicebox_health_probe"
+        probe = path / ".audioscribe_health_probe"
         probe.write_text("ok", encoding="utf-8")
         probe.unlink()
         writable = True

@@ -1,5 +1,5 @@
 export const zh = {
-  appName: 'Voicebox',
+  appName: 'AudioScribe',
   navSingle: '单段生成',
   navStories: '故事',
   navRoles: '角色',

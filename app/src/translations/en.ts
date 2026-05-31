@@ -1,7 +1,7 @@
 import type { TranslationResource } from './zh';
 
 export const en = {
-  appName: 'Voicebox',
+  appName: 'AudioScribe',
   navSingle: 'Single',
   navStories: 'Stories',
   navRoles: 'Roles',

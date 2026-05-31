@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Voicebox",
+  "productName": "AudioScribe",
   "version": "0.1.0",
-  "identifier": "com.voicebox.app",
+  "identifier": "com.audioscribe.app",
   "build": {
     "beforeDevCommand": "bun node_modules/vite/bin/vite.js",
     "devUrl": "http://localhost:1420",

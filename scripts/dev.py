@@ -44,7 +44,7 @@ def first_existing(candidates: list[Path]) -> Path | None:
 
 
 def find_bun() -> str | None:
-    explicit = os.environ.get("VOICEBOX_BUN_BIN")
+    explicit = os.environ.get("AUDIOSCRIBE_BUN_BIN")
     if explicit:
         explicit_path = Path(explicit)
         if explicit_path.exists():
@@ -80,7 +80,7 @@ def bun_command() -> str:
     raise RuntimeError(
         "Bun was not found. Install Bun and reopen the terminal, then run `just dev` again.\n"
         "Windows quick install: powershell -c \"irm bun.sh/install.ps1 | iex\"\n"
-        "If Bun is installed outside PATH, set VOICEBOX_BUN_BIN to the full bun.exe path."
+        "If Bun is installed outside PATH, set AUDIOSCRIBE_BUN_BIN to the full bun.exe path."
     )
 
 
@@ -146,7 +146,7 @@ def dev_env() -> dict[str, str]:
     env["TEMP"] = str(LOCAL_CACHE / "tmp")
     env["TMP"] = str(LOCAL_CACHE / "tmp")
     Path(env["TEMP"]).mkdir(parents=True, exist_ok=True)
-    env["VOICEBOX_INSTALL_DIR"] = str(ROOT)
+    env["AUDIOSCRIBE_INSTALL_DIR"] = str(ROOT)
     env["VITE_API_BASE_URL"] = f"http://127.0.0.1:{BACKEND_PORT}"
     env["PYTHONUNBUFFERED"] = "1"
     return env
@@ -163,7 +163,7 @@ def start_backend(python: Path) -> subprocess.Popen:
         str(python),
         "-m",
         "uvicorn",
-        "voicebox.app:create_app",
+        "audioscribe.app:create_app",
         "--factory",
         "--app-dir",
         str(BACKEND),

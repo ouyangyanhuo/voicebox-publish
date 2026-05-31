@@ -10,7 +10,7 @@ type ThemeContextValue = {
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 function getInitialTheme(): Theme {
-  const saved = window.localStorage.getItem('voicebox.theme');
+  const saved = window.localStorage.getItem('audioscribe.theme');
   if (saved === 'light' || saved === 'dark') return saved;
   return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
 }
@@ -28,7 +28,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       toggleTheme: () => {
         setTheme((prev) => {
           const next = prev === 'dark' ? 'light' : 'dark';
-          window.localStorage.setItem('voicebox.theme', next);
+          window.localStorage.setItem('audioscribe.theme', next);
           return next;
         });
       },

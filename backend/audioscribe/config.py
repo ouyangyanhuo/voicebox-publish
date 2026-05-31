@@ -27,7 +27,7 @@ class RuntimePaths:
 
 
 def get_install_dir() -> Path:
-    raw = os.environ.get("VOICEBOX_INSTALL_DIR")
+    raw = os.environ.get("AUDIOSCRIBE_INSTALL_DIR")
     if raw:
         return Path(raw).expanduser().resolve()
     return Path(__file__).resolve().parents[2]
@@ -45,7 +45,7 @@ def get_runtime_paths() -> RuntimePaths:
         cache_dir=cache,
         model_dir=model,
         logs_dir=logs,
-        database_path=data / "voicebox.db",
+        database_path=data / "audioscribe.db",
         generated_audio_dir=data / "generations",
         role_samples_dir=data / "roles",
         audio_library_dir=data / "audio-library",
@@ -58,7 +58,7 @@ def get_runtime_paths() -> RuntimePaths:
 
 def _ensure_writable(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
-    probe = path / ".voicebox_write_probe"
+    probe = path / ".audioscribe_write_probe"
     try:
         probe.write_text("ok", encoding="utf-8")
         probe.unlink()
@@ -88,5 +88,5 @@ def initialize_runtime() -> RuntimePaths:
     os.environ["HF_HUB_CACHE"] = str(paths.huggingface_cache_dir / "hub")
     os.environ["TRANSFORMERS_CACHE"] = str(paths.cache_dir / "transformers")
     os.environ["TORCH_HOME"] = str(paths.cache_dir / "torch")
-    os.environ["VOICEBOX_WORKER_CACHE"] = str(paths.worker_cache_dir)
+    os.environ["AUDIOSCRIBE_WORKER_CACHE"] = str(paths.worker_cache_dir)
     return paths

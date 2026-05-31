@@ -1,3 +1,3 @@
-from voicebox.app import create_app
+from audioscribe.app import create_app
 
 app = create_app()
