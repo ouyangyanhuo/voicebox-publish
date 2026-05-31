@@ -1,0 +1,10 @@
+{
+  "name": "voicebox-workspace",
+  "private": true,
+  "scripts": {
+    "app:dev": "cd app && bun run dev",
+    "app:build": "cd app && bun run build",
+    "tauri": "cd app && bun run tauri",
+    "backend:dev": "python -m uvicorn voicebox.app:create_app --factory --app-dir backend --host 127.0.0.1 --port 17493 --reload"
+  }
+}

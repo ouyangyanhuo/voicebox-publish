@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "sample_001",
+      "name": "Warm Narrator",
+      "description": "Calm adult narrator voice.",
+      "language": "zh",
+      "gender": "female",
+      "style": "warm",
+      "tags": ["narration", "calm"],
+      "file": "audio/sample_001.mp3",
+      "reference_text": "The exact spoken transcript for the sample.",
+      "license": "provided-by-owner"
+    }
+  ]
+}

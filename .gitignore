@@ -1,2 +1,32 @@
 .claude/*
 .codex/*
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Frontend
+node_modules/
+dist/
+.vite/
+
+# Tauri/Rust
+target/
+app/src-tauri/target/
+
+# Runtime data must be created under the install directory at runtime.
+data/
+cache/
+model/
+logs/
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# IDEs and editors
+PROJECT_DEVELOPMENT.md

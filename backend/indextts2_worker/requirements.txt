@@ -1,0 +1,6 @@
+# Placeholder pins. Final versions must come from the dependency audit.
+modelscope>=1.20
+torch==2.8.*
+transformers==4.52.1
+fastapi>=0.115,<1
+uvicorn[standard]>=0.30,<1
