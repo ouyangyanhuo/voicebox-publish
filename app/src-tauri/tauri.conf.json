@@ -10,15 +10,7 @@
     "frontendDist": "../dist"
   },
   "app": {
-    "windows": [
-      {
-        "title": "Voicebox",
-        "width": 1280,
-        "height": 820,
-        "minWidth": 960,
-        "minHeight": 640
-      }
-    ],
+    "windows": [],
     "security": {
       "csp": null
     }
@@ -27,6 +19,11 @@
     "active": true,
     "targets": "all",
     "icon": ["icons/icon.ico"],
-    "resources": ["../../preset-voices"]
+    "resources": ["../../preset-voices"],
+    "windows": {
+      "nsis": {
+        "installerHooks": "nsis/custom.nsh"
+      }
+    }
   }
 }

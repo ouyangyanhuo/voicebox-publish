@@ -49,4 +49,21 @@ Useful commands:
 just backend-dev
 just app-dev
 just check
+just build
 ```
+
+## Packaging
+
+`just build` builds the FastAPI backend as a Tauri sidecar and then runs the Tauri desktop bundle build.
+
+```powershell
+just build
+```
+
+Build output is written under:
+
+```text
+app/src-tauri/target/release/bundle/
+```
+
+The IndexTTS2 worker packaging is still a planned release step; the current build command packages the scaffolded FastAPI backend sidecar, frontend, Tauri shell, and `preset-voices/` resources.

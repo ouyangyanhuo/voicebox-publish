@@ -19,3 +19,15 @@ app-dev:
 # Run available scaffold checks.
 check:
     python scripts/dev.py --check
+
+# Build backend sidecar and Tauri desktop bundle.
+build:
+    python scripts/build.py
+
+# Build only the FastAPI backend sidecar.
+build-backend:
+    python -c "import sys; sys.path.insert(0, 'scripts'); import build; build.build_backend()"
+
+# Build only the Tauri desktop bundle. Requires build-backend first.
+build-tauri:
+    python -c "import sys; sys.path.insert(0, 'scripts'); import build; build.build_tauri()"

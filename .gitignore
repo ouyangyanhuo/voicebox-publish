@@ -1,5 +1,8 @@
+# AI agents
 .claude/*
 .codex/*
+AGENT.md
+CLAUDE.md
 
 # Python
 __pycache__/
@@ -30,3 +33,8 @@ logs/
 
 # IDEs and editors
 PROJECT_DEVELOPMENT.md
+
+#Builds
+build/
+out/
+*.exe

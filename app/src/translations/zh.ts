@@ -63,3 +63,6 @@ export const zh = {
   emotionSurprise: '惊喜',
   emotionCalm: '平静',
 } as const;
+
+export type TranslationKey = keyof typeof zh;
+export type TranslationResource = Record<TranslationKey, string>;

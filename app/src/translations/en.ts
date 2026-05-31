@@ -1,6 +1,6 @@
-import type { zh } from './zh';
+import type { TranslationResource } from './zh';
 
-export const en: typeof zh = {
+export const en = {
   appName: 'Voicebox',
   navSingle: 'Single',
   navStories: 'Stories',
@@ -64,4 +64,4 @@ export const en: typeof zh = {
   emotionMelancholy: 'Melancholy',
   emotionSurprise: 'Surprise',
   emotionCalm: 'Calm',
-};
+} satisfies TranslationResource;

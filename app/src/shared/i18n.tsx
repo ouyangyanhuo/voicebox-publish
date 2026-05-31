@@ -1,12 +1,12 @@
 import { createContext, useContext, useMemo, useState } from 'react';
 import { en } from '../translations/en';
-import { zh } from '../translations/zh';
+import { zh, type TranslationKey, type TranslationResource } from '../translations/zh';
+
+export type { TranslationKey } from '../translations/zh';
 
 export type Locale = 'zh' | 'en';
 
-const resources = { zh, en };
-
-export type TranslationKey = keyof typeof zh;
+const resources: Record<Locale, TranslationResource> = { zh, en };
 
 type LanguageContextValue = {
   locale: Locale;
