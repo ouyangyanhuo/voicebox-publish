@@ -21,6 +21,7 @@ class RuntimePaths:
     role_samples_dir: Path
     audio_library_dir: Path
     worker_cache_dir: Path
+    temp_dir: Path
     modelscope_model_dir: Path
     huggingface_cache_dir: Path
     preset_voice_dir: Path
@@ -50,6 +51,7 @@ def get_runtime_paths() -> RuntimePaths:
         role_samples_dir=data / "roles",
         audio_library_dir=data / "audio-library",
         worker_cache_dir=cache / "indextts2",
+        temp_dir=cache / "tmp",
         modelscope_model_dir=model / "modelscope",
         huggingface_cache_dir=cache / "huggingface",
         preset_voice_dir=install / "preset-voices",
@@ -77,6 +79,7 @@ def initialize_runtime() -> RuntimePaths:
         paths.role_samples_dir,
         paths.audio_library_dir,
         paths.worker_cache_dir,
+        paths.temp_dir,
         paths.modelscope_model_dir,
         paths.huggingface_cache_dir,
         paths.preset_voice_dir,

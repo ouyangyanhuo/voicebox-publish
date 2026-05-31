@@ -114,7 +114,7 @@ def ensure_backend_env() -> Path:
         run([sys.executable, "-m", "venv", str(BACKEND_VENV)])
 
     probe = subprocess.run(
-        [str(python), "-c", "import fastapi, uvicorn"],
+        [str(python), "-c", "import fastapi, uvicorn, modelscope"],
         cwd=str(ROOT),
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
@@ -169,6 +169,8 @@ def start_backend(python: Path) -> subprocess.Popen:
         str(BACKEND),
         "--reload-dir",
         str(BACKEND),
+        "--reload-exclude",
+        "indextts2_worker/.venv",
         "--host",
         "127.0.0.1",
         "--port",

@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from . import __version__
 from .config import initialize_runtime
 from .database import initialize_database
-from .routes import emotion, generation, health, models, preset_voices, roles, settings, stories
+from .routes import emotion, generation, generation_audio, health, models, preset_voices, roles, settings, stories
 
 
 def create_app() -> FastAPI:
@@ -29,6 +29,7 @@ def create_app() -> FastAPI:
     app.include_router(models.router, prefix="/models", tags=["models"])
     app.include_router(roles.router, prefix="/roles", tags=["roles"])
     app.include_router(generation.router, prefix="/generate", tags=["generation"])
+    app.include_router(generation_audio.router, prefix="/generation-audio", tags=["generation-audio"])
     app.include_router(stories.router, prefix="/stories", tags=["stories"])
     app.include_router(emotion.router, prefix="/emotion-presets", tags=["emotion"])
     app.include_router(preset_voices.router, prefix="/preset-voices", tags=["preset-voices"])

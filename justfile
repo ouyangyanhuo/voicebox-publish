@@ -20,6 +20,10 @@ app-dev:
 check:
     python scripts/dev.py --check
 
+# Create or update the isolated IndexTTS2 worker runtime.
+setup-indextts2:
+    python scripts/setup_indextts2.py
+
 # Build backend sidecar and Tauri desktop bundle.
 build:
     python scripts/build.py

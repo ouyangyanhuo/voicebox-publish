@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import uuid
 
 from fastapi import APIRouter, Request
@@ -28,7 +29,11 @@ def list_roles(request: Request) -> list[RoleResponse]:
             name=row["name"],
             description=row["description"],
             language=row["language"],
+            default_emo_alpha=row["default_emo_alpha"],
+            default_emo_vector=[0.0] * 8 if row["default_emo_vector"] is None else json.loads(row["default_emo_vector"]),
+            default_emo_text=row["default_emo_text"],
             sample_count=row["sample_count"],
+            updated_at=row["updated_at"],
         )
         for row in rows
     ]
@@ -39,7 +44,20 @@ def create_role(request: Request, payload: RoleCreate) -> RoleResponse:
     role_id = str(uuid.uuid4())
     with connect(request.app.state.paths.database_path) as conn:
         conn.execute(
-            "INSERT INTO roles (id, name, description, language) VALUES (?, ?, ?, ?)",
-            (role_id, payload.name, payload.description, payload.language),
+            """
+            INSERT INTO roles (
+              id, name, description, language, default_emo_alpha, default_emo_vector, default_emo_text
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                role_id,
+                payload.name,
+                payload.description,
+                payload.language,
+                payload.default_emo_alpha,
+                json.dumps(payload.default_emo_vector),
+                payload.default_emo_text,
+            ),
         )
-    return RoleResponse(id=role_id, sample_count=0, **payload.model_dump())
+    return RoleResponse(id=role_id, sample_count=0, updated_at=None, **payload.model_dump())

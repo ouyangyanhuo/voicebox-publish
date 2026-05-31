@@ -19,6 +19,7 @@ import { RolesPage } from './pages/RolesPage';
 import { EmotionPage } from './pages/EmotionPage';
 import { PresetVoicesPage } from './pages/PresetVoicesPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { ModelDownloadToast } from './components/ModelDownloadToast';
 
 const navItems = [
   { id: 'single', icon: AudioLines, labelKey: 'navSingle' },
@@ -89,6 +90,7 @@ export function App() {
         {section === 'presetVoices' && <PresetVoicesPage />}
         {section === 'settings' && <SettingsPage />}
       </main>
+      <ModelDownloadToast />
     </div>
   );
 }
